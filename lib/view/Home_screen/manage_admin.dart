@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodapp_admin/Models/admin_model.dart';
 import 'package:foodapp_admin/Widgets/admi_widgets.dart';
 import 'package:foodapp_admin/Widgets/comman.dart';
+import 'package:foodapp_admin/view/manage_buyer/Buyer_screen.dart';
 
 class AdminManagementScreen extends StatefulWidget {
   const AdminManagementScreen({super.key});
@@ -158,16 +159,26 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonHeader(
-                  title: 'Manage Admin',
-                  icon: Icons.admin_panel_settings,
-                  additionalAction: ElevatedButton.icon(
-                    onPressed: _openAddAdminForm,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Admin'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      foregroundColor: Colors.white,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BuyerManagementScreen(),
+                      ),
+                    );
+                  },
+                  child: CommonHeader(
+                    title: 'Manage Admin',
+                    icon: Icons.admin_panel_settings,
+                    additionalAction: ElevatedButton.icon(
+                      onPressed: _openAddAdminForm,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add Admin'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
                   ),
                 ),

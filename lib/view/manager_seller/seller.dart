@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodapp_admin/Models/seller_models.dart';
 import 'package:foodapp_admin/Widgets/comman.dart';
+import 'package:foodapp_admin/view/Manage_rider/ride_screnn.dart';
 import 'package:foodapp_admin/view/manager_seller/edit_screen.dart';
 
 // Your existing common widgets would be imported here
@@ -82,7 +83,17 @@ class _SellerListScreenState extends State<SellerListScreen> {
         child: Column(
           children: [
             // Header
-            CommonHeader(title: 'Manage Seller', icon: Icons.store),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RiderManagementScreen(),
+                  ),
+                );
+              },
+              child: CommonHeader(title: 'Manage Seller', icon: Icons.store),
+            ),
             SizedBox(height: 16),
 
             // Table Controls

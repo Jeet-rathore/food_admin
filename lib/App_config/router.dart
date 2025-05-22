@@ -17,7 +17,7 @@ final GoRouter appRouter = GoRouter(
       name: 'LoginScreen',
       builder:
           (BuildContext context, GoRouterState state) =>
-              CategoryManagementScreen(),
+              LoginScreen(),
     ),
     GoRoute(
       path: '/forget_password',

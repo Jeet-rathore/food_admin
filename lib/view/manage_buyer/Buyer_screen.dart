@@ -3,6 +3,7 @@ import 'package:foodapp_admin/Models/buyer_model.dart';
 import 'package:foodapp_admin/Widgets/buyer.dart';
 import 'package:foodapp_admin/Widgets/comman.dart';
 import 'package:foodapp_admin/view/manage_buyer/edit.dart';
+import 'package:foodapp_admin/view/manager_seller/seller.dart';
 
 class BuyerManagementScreen extends StatefulWidget {
   const BuyerManagementScreen({super.key});
@@ -96,7 +97,15 @@ class _BuyerManagementScreenState extends State<BuyerManagementScreen> {
           ),
           child: Column(
             children: [
-              CommonHeader(title: 'Manage Buyer', icon: Icons.group),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SellerListScreen()),
+                  );
+                },
+                child: CommonHeader(title: 'Manage Buyer', icon: Icons.group),
+              ),
               const SizedBox(height: 16),
               Expanded(child: _buildDataTable()),
               const SizedBox(height: 16),

@@ -4,6 +4,7 @@ import 'package:foodapp_admin/Widgets/comman.dart';
 import 'package:foodapp_admin/view/Manage_rider/add_ride.dart';
 import 'package:foodapp_admin/view/Manage_rider/edit_ride.dart'
     show EditRiderScreen;
+import 'package:foodapp_admin/view/manage_catogary/catogrt.dart';
 
 // Main Rider Management Screen
 class RiderManagementScreen extends StatefulWidget {
@@ -33,28 +34,43 @@ class _RiderManagementScreenState extends State<RiderManagementScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CommonHeader(
-              title: 'Manage Ryder',
-              icon: Icons.motorcycle,
-              additionalAction: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddRiderScreen()),
-                    );
-                  },
-                  child: const Text(
-                    'Add Ryder',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryManagementScreen(),
+                  ),
+                );
+              },
+              child: CommonHeader(
+                title: 'Manage Ryder',
+                icon: Icons.motorcycle,
+                additionalAction: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddRiderScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Add Ryder',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
               ),
