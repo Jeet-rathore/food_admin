@@ -3,7 +3,7 @@ import 'package:foodapp_admin/App_config/assets.dart';
 import 'package:foodapp_admin/Them/colour.dart';
 import 'package:foodapp_admin/Widgets/App_button.dart';
 import 'package:foodapp_admin/Widgets/common_textfield.dart';
-import 'package:foodapp_admin/Widgets/widgets/common_layout.dart';
+import 'package:foodapp_admin/Widgets/common_layout.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {

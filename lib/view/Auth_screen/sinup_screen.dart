@@ -5,7 +5,7 @@ import 'package:foodapp_admin/Them/sizeconfig.dart';
 import 'package:foodapp_admin/Them/spacing.dart';
 import 'package:foodapp_admin/Widgets/App_button.dart';
 import 'package:foodapp_admin/Widgets/common_textfield.dart';
-import 'package:foodapp_admin/Widgets/widgets/common_layout.dart';
+import 'package:foodapp_admin/Widgets/common_layout.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
   const ResetPasswordScreen({super.key});
