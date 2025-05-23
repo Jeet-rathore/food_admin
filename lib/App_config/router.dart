@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodapp_admin/view/AssinConfigration_screen/assin_screen.dart';
 import 'package:foodapp_admin/view/Auth_screen/Loigin_Screen.dart';
 import 'package:foodapp_admin/view/Auth_screen/sinup_screen.dart';
 import 'package:foodapp_admin/view/Home_screen/manage_admin.dart';
@@ -17,7 +18,7 @@ final GoRouter appRouter = GoRouter(
       name: 'LoginScreen',
       builder:
           (BuildContext context, GoRouterState state) =>
-              LoginScreen(),
+              AssignConfigurationScreen(),
     ),
     GoRoute(
       path: '/forget_password',

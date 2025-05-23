@@ -26,7 +26,6 @@ class CustomFormField extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Text field container
         Container(
           margin: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
@@ -48,32 +47,29 @@ class CustomFormField extends StatelessWidget {
             ),
           ),
         ),
-        // Positioned label container
         Positioned(
-          top: -10,
+          top: -2,
           left: 12,
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFBEB),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 16, color: Colors.black),
-                  const SizedBox(width: 4),
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFFBEB),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 16, color: Colors.black),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -82,7 +78,6 @@ class CustomFormField extends StatelessWidget {
   }
 }
 
-// Custom Dropdown Field Widget for Admin
 class CustomDropdownField extends StatelessWidget {
   final String value;
   final List<String> items;
@@ -106,7 +101,6 @@ class CustomDropdownField extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Dropdown field container
         Container(
           margin: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
@@ -134,32 +128,29 @@ class CustomDropdownField extends StatelessWidget {
             onChanged: onChanged,
           ),
         ),
-        // Positioned label container
         Positioned(
-          top: -10,
+          top: -2,
           left: 12,
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFBEB),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 16, color: Colors.black),
-                  const SizedBox(width: 4),
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFFBEB),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 16, color: Colors.black),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -168,7 +159,7 @@ class CustomDropdownField extends StatelessWidget {
   }
 }
 
-// Admin Data Table Widget
+// Updated Admin Data Table Widget with fixed alignment
 class AdminDataTable extends StatelessWidget {
   final List<Admin> admins;
   final int startIndex;
@@ -195,8 +186,9 @@ class AdminDataTable extends StatelessWidget {
       ),
       child: Column(
         children: [
+          // Header Row
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
             decoration: BoxDecoration(
               color: Colors.grey.shade800,
               borderRadius: const BorderRadius.only(
@@ -207,50 +199,187 @@ class AdminDataTable extends StatelessWidget {
             child: const Row(
               children: [
                 Expanded(flex: 1, child: _TableHeader('SL No.')),
-                Expanded(flex: 2, child: _TableHeader('Name')),
-                Expanded(flex: 2, child: _TableHeader('Email ID')),
-                Expanded(flex: 2, child: _TableHeader('List of Admin')),
-                Expanded(flex: 2, child: _TableHeader('Type')),
-                Expanded(flex: 1, child: _TableHeader('Actions')),
+                Expanded(flex: 3, child: _TableHeader('Name')),
+                Expanded(flex: 3, child: _TableHeader('Email ID')),
+                Expanded(flex: 2, child: _TableHeader('Role')),
+                Expanded(flex: 2, child: _TableHeader('Status')),
+                Expanded(flex: 2, child: _TableHeader('Actions')),
               ],
             ),
           ),
+          // Data Rows
           Expanded(
             child: ListView.builder(
               itemCount: admins.length,
               itemBuilder: (context, index) {
                 final admin = admins[index];
                 return Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 8,
+                  ),
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(color: Colors.grey.shade300, width: 1),
                     ),
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      _TableCell(
-                        text: '${startIndex + index + 1}',
+                      // Serial Number
+                      Expanded(
                         flex: 1,
-                        alignment: Alignment.center,
-                      ),
-                      _TableCell(
-                        flex: 2,
-                        content: ProfileAvatarWidget(
-                          name: admin.name,
-                          initial: 'R',
+                        child: Container(
+                          height: 40,
+                          alignment: Alignment.center,
+                          child: Text(
+                            '${startIndex + index + 1}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
-                      _TableCell(text: admin.email, flex: 2),
-                      _TableCell(text: admin.role, flex: 2),
-                      _TableCell(
-                        flex: 2,
-                        content: StatusWidget(isActive: admin.isActive),
+                      // Name with Avatar - Fixed alignment
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          height: 40,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 16,
+                                backgroundColor: Colors.orange.shade100,
+                                child: Text(
+                                  admin.name.isNotEmpty
+                                      ? admin.name[0].toUpperCase()
+                                      : 'A',
+                                  style: TextStyle(
+                                    color: Colors.orange.shade700,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  admin.name,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      _TableCell(
-                        flex: 1,
-                        content: ActionButtonsWidget(
-                          onEdit: () => onEdit(admin),
-                          onDelete: () => onDelete(admin),
+                      // Email - Fixed alignment
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          height: 40,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            admin.email,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                      // Role
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: 40,
+                          alignment: Alignment.center,
+                          child: Text(
+                            admin.role,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                      // Status
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: 40,
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  admin.isActive
+                                      ? Colors.green.shade100
+                                      : Colors.red.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              admin.isActive ? 'Active' : 'Inactive',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    admin.isActive
+                                        ? Colors.green.shade700
+                                        : Colors.red.shade700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Actions
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: 40,
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () => onEdit(admin),
+                                icon: const Icon(Icons.edit_outlined),
+                                color: Colors.blue,
+                                iconSize: 20,
+                                constraints: const BoxConstraints(
+                                  minWidth: 32,
+                                  minHeight: 32,
+                                ),
+                                padding: EdgeInsets.zero,
+                                tooltip: 'Edit',
+                              ),
+                              const SizedBox(width: 4),
+                              IconButton(
+                                onPressed: () => onDelete(admin),
+                                icon: const Icon(Icons.delete_outline),
+                                color: Colors.red,
+                                iconSize: 20,
+                                constraints: const BoxConstraints(
+                                  minWidth: 32,
+                                  minHeight: 32,
+                                ),
+                                padding: EdgeInsets.zero,
+                                tooltip: 'Delete',
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -275,32 +404,10 @@ class _TableHeader extends StatelessWidget {
     return Text(
       text,
       textAlign: TextAlign.center,
-      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-    );
-  }
-}
-
-class _TableCell extends StatelessWidget {
-  final String? text;
-  final int flex;
-  final Widget? content;
-  final Alignment alignment;
-
-  const _TableCell({
-    this.text,
-    required this.flex,
-    this.content,
-    this.alignment = Alignment.centerLeft,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        alignment: alignment,
-        child: content ?? Text(text ?? ''),
+      style: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
       ),
     );
   }
