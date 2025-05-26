@@ -3,10 +3,8 @@ import 'package:foodapp_admin/view/Add-product/product_screen.dart';
 import 'package:foodapp_admin/view/AssinConfigration_screen/assin_screen.dart';
 import 'package:foodapp_admin/view/Manage_rider/add_ride.dart';
 import 'package:foodapp_admin/view/manage_buyer/buyer_screen.dart';
-
 import 'package:foodapp_admin/view/manage_catogary/catogrt.dart';
 import 'package:foodapp_admin/view/manage_vechail/vechali_screen.dart';
-
 import 'package:foodapp_admin/view/manager_seller/seller.dart';
 
 class AdminDrawer extends StatelessWidget {
@@ -31,38 +29,43 @@ class AdminDrawer extends StatelessWidget {
             context,
             Icons.admin_panel_settings,
             "Buyer Admin",
-            const BuyerManagementScreen(),
+            () => const BuyerManagementScreen(),
           ),
           _buildDrawerItem(
             context,
             Icons.shopping_bag,
-            "seller Buyers",
-            SellerListScreen(),
+            "Seller Buyers",
+            () => SellerListScreen(),
           ),
-          _buildDrawerItem(context, Icons.store, "Add rider", AddRiderScreen()),
+          _buildDrawerItem(
+            context,
+            Icons.store,
+            "Add Rider",
+            () => AddRiderScreen(),
+          ),
           _buildDrawerItem(
             context,
             Icons.fastfood,
-            "Manage catogary",
-            CategoryManagementScreen(),
+            "Manage Category",
+            () => CategoryManagementScreen(),
           ),
           _buildDrawerItem(
             context,
             Icons.list_alt,
-            "manage product",
-            ProductManagementScreen(),
+            "Manage Product",
+            () => ProductManagementScreen(),
           ),
           _buildDrawerItem(
             context,
             Icons.bar_chart,
-            "manage assignconfigration",
-            AssignConfigurationScreen(),
+            "Manage Assignment",
+            () => AssignConfigurationScreen(),
           ),
           _buildDrawerItem(
             context,
             Icons.settings,
-            "manage vichali",
-            VehicleManagementScreen(),
+            "Manage Vehicle",
+            () => VehicleManagementScreen(),
           ),
         ],
       ),
@@ -73,17 +76,36 @@ class AdminDrawer extends StatelessWidget {
     BuildContext context,
     IconData icon,
     String title,
-    Widget screen,
+    Widget Function() screenBuilder,
   ) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      onTap: () {
-        Navigator.pop(context); // close drawer
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => screen),
-        );
+      onTap: () async {
+        try {
+          // Close drawer first
+          Navigator.pop(context);
+
+          // Add a small delay to ensure drawer closes properly
+          await Future.delayed(const Duration(milliseconds: 100));
+
+          // Check if context is still mounted
+          if (context.mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => screenBuilder()),
+            );
+          }
+        } catch (e) {
+          debugPrint('Navigation error: $e');
+          // Fallback navigation without replacement
+          if (context.mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => screenBuilder()),
+            );
+          }
+        }
       },
     );
   }
