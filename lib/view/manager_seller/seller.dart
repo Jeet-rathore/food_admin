@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:foodapp_admin/Models/seller_models.dart';
 import 'package:foodapp_admin/Widgets/comman.dart';
-import 'package:foodapp_admin/view/Manage_rider/ride_screnn.dart';
-import 'package:foodapp_admin/view/manager_seller/edit_screen.dart';
 
-// Your existing common widgets would be imported here
-// import 'common_widgets.dart';
+// Sample Seller Data Model
+class SellerData {
+  final int id;
+  final String name;
+  final String email;
+  final String contact;
+  final String type;
+  final bool isActive;
+
+  SellerData({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.contact,
+    required this.type,
+    required this.isActive,
+  });
+}
 
 class SellerListScreen extends StatefulWidget {
   @override
@@ -24,13 +37,12 @@ class _SellerListScreenState extends State<SellerListScreen> {
   }
 
   void _loadSellers() {
-    // Sample data - replace with your actual data loading
     _sellers = List.generate(50, (index) {
       return SellerData(
         id: index + 1,
         name: 'Big SmartN',
-        email: 'bigsmart@gmail.com',
-        contact: '+91 73374 52390',
+        email: 'bigsmart${index + 1}@gmail.com',
+        contact: '+91 73374 5239${index.toString().padLeft(2, '0')}',
         type: index % 3 == 0 ? 'Inactive' : 'Active',
         isActive: index % 3 != 0,
       );
@@ -38,10 +50,7 @@ class _SellerListScreenState extends State<SellerListScreen> {
   }
 
   void _editSeller(SellerData seller) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => EditSellerScreen(seller: seller)),
-    );
+    print('Edit seller: ${seller.name}');
   }
 
   void _deleteSeller(SellerData seller) {
@@ -82,33 +91,18 @@ class _SellerListScreenState extends State<SellerListScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Header
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RiderManagementScreen(),
-                  ),
-                );
-              },
-              child: CommonHeader(title: 'Manage Seller', icon: Icons.store),
-            ),
-            SizedBox(height: 16),
-
-            // Table Controls
+            CommonHeader(title: 'Manage Seller', icon: Icons.people),
+            const SizedBox(height: 16),
             TableControlsWidget(
               entriesPerPage: _entriesPerPage,
-              onEntriesChanged: (value) {
+              onEntriesChanged: (newValue) {
                 setState(() {
-                  _entriesPerPage = value;
+                  _entriesPerPage = newValue;
                   _currentPage = 1;
                 });
               },
             ),
-            SizedBox(height: 16),
-
-            // Data Table
+            const SizedBox(height: 16),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -124,7 +118,6 @@ class _SellerListScreenState extends State<SellerListScreen> {
                 ),
                 child: Column(
                   children: [
-                    // Table Header
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[800],
@@ -149,15 +142,13 @@ class _SellerListScreenState extends State<SellerListScreen> {
                               _buildHeaderCell('Name'),
                               _buildHeaderCell('Email ID'),
                               _buildHeaderCell('Contact No.'),
-                              _buildHeaderCell('Type'),
+                              _buildHeaderCell('Status'),
                               _buildHeaderCell('Actions'),
                             ],
                           ),
                         ],
                       ),
                     ),
-
-                    // Table Body
                     Expanded(
                       child: SingleChildScrollView(
                         child: Table(
@@ -181,12 +172,9 @@ class _SellerListScreenState extends State<SellerListScreen> {
                                     ),
                                   ),
                                   children: [
-                                    _buildDataCell(seller!.id.toString()),
+                                    _buildDataCell(seller.id.toString()),
                                     _buildDataCellWithWidget(
-                                      ProfileAvatarWidget(
-                                        name: seller.name,
-                                        initial: 'B',
-                                      ),
+                                      ProfileAvatarWidget(name: seller.name),
                                     ),
                                     _buildDataCell(seller.email),
                                     _buildDataCell(seller.contact),
@@ -209,26 +197,26 @@ class _SellerListScreenState extends State<SellerListScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
-
-            // Pagination
+            const SizedBox(height: 16),
             PaginationWidget(
+              onPrevious:
+                  _currentPage > 1
+                      ? () {
+                        setState(() {
+                          _currentPage--;
+                        });
+                      }
+                      : null,
+              onNext:
+                  endIndex < _sellers.length
+                      ? () {
+                        setState(() {
+                          _currentPage++;
+                        });
+                      }
+                      : null,
               canGoPrevious: _currentPage > 1,
               canGoNext: endIndex < _sellers.length,
-              onPrevious: () {
-                if (_currentPage > 1) {
-                  setState(() {
-                    _currentPage--;
-                  });
-                }
-              },
-              onNext: () {
-                if (endIndex < _sellers.length) {
-                  setState(() {
-                    _currentPage++;
-                  });
-                }
-              },
             ),
           ],
         ),
@@ -262,5 +250,34 @@ class _SellerListScreenState extends State<SellerListScreen> {
   }
 }
 
-// Edit Seller Screen
-// Data Models
+// ✅ Updated Status Widget (with small circle)
+class StatusWidget extends StatelessWidget {
+  final bool isActive;
+
+  const StatusWidget({super.key, required this.isActive});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: isActive ? Colors.green : Colors.red,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          isActive ? 'Active' : 'Inactive',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: isActive ? Colors.green : Colors.red,
+          ),
+        ),
+      ],
+    );
+  }
+}

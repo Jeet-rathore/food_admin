@@ -1,68 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:foodapp_admin/Models/buyer_model.dart';
-import 'package:foodapp_admin/Widgets/buyer.dart';
+import 'package:foodapp_admin/Them/colour.dart';
 import 'package:foodapp_admin/Widgets/comman.dart';
 
-class EditBuyerScreen extends StatefulWidget {
-  final Buyer buyer;
+class EditBuyerScreen extends StatelessWidget {
+  const EditBuyerScreen({super.key});
 
-  const EditBuyerScreen({super.key, required this.buyer});
-
-  @override
-  State<EditBuyerScreen> createState() => _EditBuyerScreenState();
-}
-
-class _EditBuyerScreenState extends State<EditBuyerScreen> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _firstNameController;
-  late TextEditingController _lastNameController;
-  late TextEditingController _panIdController;
-  late TextEditingController _contactController;
-  late TextEditingController _officeController;
-  late TextEditingController _streetController;
-  late TextEditingController _areaController;
-  late TextEditingController _pinCodeController;
-  String _selectedCity = 'Select City';
-
-  @override
-  void initState() {
-    super.initState();
-    _firstNameController = TextEditingController(
-      text: widget.buyer.firstName ?? '',
+  Widget buildLabeledField({
+    required IconData icon,
+    required String label,
+    Color iconColor = Colors.black,
+  }) {
+    return Stack(
+      children: [
+        Container(
+          height: 55,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.grey.shade400),
+          ),
+          alignment: Alignment.centerLeft,
+          child: Text(' ', style: TextStyle(color: Colors.grey.shade600)),
+        ),
+        Positioned(
+          left: 5,
+          top: 1,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            color: AppColors.lightYellow,
+            child: Row(
+              children: [
+                Icon(icon, size: 14, color: iconColor),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
-    _lastNameController = TextEditingController(
-      text: widget.buyer.lastName ?? '',
-    );
-    _panIdController = TextEditingController(text: widget.buyer.panId ?? '');
-    _contactController = TextEditingController(
-      text: widget.buyer.contactNumber ?? '',
-    );
-    _officeController = TextEditingController(
-      text: widget.buyer.officeNumber ?? '',
-    );
-    _streetController = TextEditingController(
-      text: widget.buyer.streetArea ?? '',
-    );
-    _areaController = TextEditingController(
-      text: widget.buyer.areaLocality ?? '',
-    );
-    _pinCodeController = TextEditingController(
-      text: widget.buyer.pinCode ?? '',
-    );
-    _selectedCity = widget.buyer.city ?? 'Select City';
   }
 
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _panIdController.dispose();
-    _contactController.dispose();
-    _officeController.dispose();
-    _streetController.dispose();
-    _areaController.dispose();
-    _pinCodeController.dispose();
-    super.dispose();
+  Widget buildCityDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('City', style: TextStyle(fontSize: 12, color: Colors.grey)),
+        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          height: 55,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            border: Border.all(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            children: const [
+              Icon(Icons.location_city, size: 20, color: Colors.orange),
+              SizedBox(width: 8),
+              Text('Select City', style: TextStyle(color: Colors.grey)),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -79,7 +85,6 @@ class _EditBuyerScreenState extends State<EditBuyerScreen> {
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 2,
                 blurRadius: 5,
                 offset: const Offset(0, 3),
               ),
@@ -88,34 +93,161 @@ class _EditBuyerScreenState extends State<EditBuyerScreen> {
           child: Column(
             children: [
               const CommonHeader(title: 'Edit Buyer', icon: Icons.edit),
+
+              const SizedBox(height: 12),
+              const Center(
+                child: Text(
+                  'Edit Buyer Details',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Edit Buyer Details',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[800],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'General Information',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.badge,
+                              label: 'Buyer ID',
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 24),
-                        _buildGeneralInformationSection(),
-                        const SizedBox(height: 24),
-                        _buildAddressSection(),
-                        const SizedBox(height: 32),
-                        FormActionButtons(
-                          onCancel: () => Navigator.pop(context),
-                          onSave: _saveBuyer,
-                          saveText: 'Update',
-                        ),
-                      ],
-                    ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.person,
+                              label: 'First Name',
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.person,
+                              label: 'Last Name',
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.email,
+                              label: 'Email',
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.phone,
+                              label: 'Contact No.',
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.phone_android,
+                              label: 'Office No.',
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.location_on,
+                              label: 'Door No . /House NO.',
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.map,
+                              label: 'Street Area',
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.location_on,
+                              label: 'Locality',
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(child: buildCityDropdown()),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: buildLabeledField(
+                              icon: Icons.pin_drop,
+                              label: 'Pin Code',
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 32),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: () => Navigator.pop(context),
+
+                            label: const Text(
+                              'Cancel',
+                              style: TextStyle(color: AppColors.darkYellow),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.lightYellow,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton.icon(
+                            onPressed: () {},
+
+                            label: const Text('Update'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.darkYellow,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -124,166 +256,5 @@ class _EditBuyerScreenState extends State<EditBuyerScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildGeneralInformationSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'General Information',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey[800],
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: BuyerFormField(
-                controller: _firstNameController,
-                label: 'First Name',
-                hintText: 'Enter Your First Name',
-                icon: Icons.person_outline,
-                iconColor: Colors.orange,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: BuyerFormField(
-                controller: _lastNameController,
-                label: 'Last Name',
-                hintText: 'Enter Your Last Name',
-                icon: Icons.person_outline,
-                iconColor: Colors.orange,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: BuyerFormField(
-                controller: _panIdController,
-                label: 'Pan Id',
-                hintText: 'Enter Pan ID',
-                icon: Icons.credit_card,
-                iconColor: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: BuyerFormField(
-                controller: _contactController,
-                label: 'Contact Number',
-                hintText: 'Enter Your Contact Number',
-                icon: Icons.phone,
-                iconColor: Colors.orange,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            const Expanded(child: SizedBox()),
-            const SizedBox(width: 16),
-            Expanded(
-              child: BuyerFormField(
-                controller: _officeController,
-                label: 'Office Number',
-                hintText: 'Enter Your Office Contact Number',
-                icon: Icons.phone,
-                iconColor: Colors.orange,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAddressSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Address',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey[800],
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: BuyerFormField(
-                controller: _streetController,
-                label: 'Street Area',
-                hintText: 'Enter Your Street Area',
-                icon: Icons.location_on_outlined,
-                iconColor: Colors.orange,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: BuyerFormField(
-                controller: _areaController,
-                label: 'Area Locality',
-                hintText: 'Enter Your Area / Locality',
-                icon: Icons.location_on_outlined,
-                iconColor: Colors.orange,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: CityDropdownWidget(
-                selectedCity: _selectedCity,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCity = value!;
-                  });
-                },
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: BuyerFormField(
-                controller: _pinCodeController,
-                label: 'Pin Code',
-                hintText: 'Enter Your Pin Code',
-                icon: Icons.location_on_outlined,
-                iconColor: Colors.orange,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  void _saveBuyer() {
-    if (_formKey.currentState!.validate()) {
-      // Here you would typically save the buyer data
-      // For now, we'll just navigate back
-      Navigator.pop(context);
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Buyer updated successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
   }
 }

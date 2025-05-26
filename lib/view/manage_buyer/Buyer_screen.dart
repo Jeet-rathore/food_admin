@@ -179,7 +179,7 @@ class _BuyerManagementScreenState extends State<BuyerManagementScreen> {
   void _editBuyer(Buyer buyer) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EditBuyerScreen(buyer: buyer)),
+      MaterialPageRoute(builder: (context) => EditBuyerScreen()),
     );
   }
 

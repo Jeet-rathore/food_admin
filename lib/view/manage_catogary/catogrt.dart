@@ -189,8 +189,8 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                                 Expanded(
                                   flex: 2,
                                   child: Container(
-                                    width: 40,
-                                    height: 40,
+                                    width: 50,
+                                    height: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(4),
                                       color: Colors.grey[200],
@@ -198,7 +198,9 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(4),
                                       child: Image.network(
-                                        'https://picsum.photos/40/40?random=${category.slNo}',
+                                        'https://picsum.photos/50/50?random=${category.slNo}',
+                                        width: 50,
+                                        height: 50,
                                         fit: BoxFit.cover,
                                         errorBuilder: (
                                           context,
@@ -208,6 +210,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                                           return Icon(
                                             Icons.image,
                                             color: Colors.grey[400],
+                                            size: 24,
                                           );
                                         },
                                       ),
@@ -413,20 +416,45 @@ class _CategoryDialogState extends State<CategoryDialog> {
                   'Status: ',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
-                Switch(
-                  value: _isActive,
-                  onChanged: (value) {
-                    setState(() {
-                      _isActive = value;
-                    });
-                  },
-                  activeColor: Colors.green,
+                Transform.scale(
+                  scale: 0.8, // Makes the switch smaller
+                  child: Switch(
+                    value: _isActive,
+                    onChanged: (value) {
+                      setState(() {
+                        _isActive = value;
+                      });
+                    },
+                    activeColor: Colors.white,
+                    activeTrackColor: Colors.green,
+                    inactiveThumbColor: Colors.white,
+                    inactiveTrackColor: Colors.grey[400],
+                  ),
                 ),
-                Text(
-                  _isActive ? 'Active' : 'Inactive',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: _isActive ? Colors.green : Colors.grey,
+                const SizedBox(width: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        _isActive
+                            ? Colors.green.withOpacity(0.1)
+                            : Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _isActive ? Colors.green : Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    _isActive ? 'Active' : 'Inactive',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: _isActive ? Colors.green : Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -436,7 +464,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
             // Image Upload Section
             Container(
               width: double.infinity,
-              height: 120,
+              height: 140,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey[300]!,
@@ -451,8 +479,13 @@ class _CategoryDialogState extends State<CategoryDialog> {
                   Icon(Icons.cloud_upload, size: 32, color: Colors.grey[400]),
                   const SizedBox(height: 8),
                   const Text(
-                    'Upload Details',
+                    'Upload Image',
                     style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Drag and drop or click to browse',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ],
               ),
@@ -495,10 +528,14 @@ class _CategoryDialogState extends State<CategoryDialog> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
+                    elevation: 2,
                   ),
                   child: Text(
-                    widget.isEdit ? 'Update' : 'Update',
-                    style: const TextStyle(color: Colors.white),
+                    widget.isEdit ? 'Update' : 'Save',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodapp_admin/Models/admin_model.dart';
 import 'package:foodapp_admin/Widgets/admi_widgets.dart';
 import 'package:foodapp_admin/Widgets/comman.dart';
+import 'package:foodapp_admin/Widgets/comman_drawer.dart';
 import 'package:foodapp_admin/view/manage_buyer/Buyer_screen.dart';
 
 class AdminManagementScreen extends StatefulWidget {
@@ -115,7 +116,6 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
   void _saveAdmin(String name, String email, String role, bool isActive) {
     setState(() {
       if (_isEditingAdmin && _selectedAdmin != null) {
-        // Update existing admin
         final index = _admins.indexWhere(
           (admin) => admin.id == _selectedAdmin!.id,
         );
@@ -129,7 +129,6 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
           );
         }
       } else {
-        // Add new admin
         _admins.add(
           Admin(
             id:
@@ -151,7 +150,19 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const AdminDrawer(), // Drawer here
       backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        title: const Text('Admin Management'),
+        backgroundColor: Colors.orange,
+        leading: Builder(
+          builder:
+              (context) => IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
+        ),
+      ),
       body: Stack(
         children: [
           Padding(
