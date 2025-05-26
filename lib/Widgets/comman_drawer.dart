@@ -81,31 +81,25 @@ class AdminDrawer extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      onTap: () async {
-        try {
-          // Close drawer first
-          Navigator.pop(context);
+      onTap: () {
+        // Close drawer first
+        Navigator.pop(context);
 
-          // Add a small delay to ensure drawer closes properly
-          await Future.delayed(const Duration(milliseconds: 100));
-
-          // Check if context is still mounted
-          if (context.mounted) {
+        // Schedule navigation for next frame
+        Future.microtask(() {
+          if (context.mounted && Navigator.canPop(context)) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => screenBuilder()),
             );
-          }
-        } catch (e) {
-          debugPrint('Navigation error: $e');
-          // Fallback navigation without replacement
-          if (context.mounted) {
+          } else if (context.mounted) {
+            // If we can't pop (meaning we're at root), just push
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => screenBuilder()),
             );
           }
-        }
+        });
       },
     );
   }
