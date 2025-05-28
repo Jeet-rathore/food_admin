@@ -38,48 +38,61 @@ class _RiderManagementScreenState extends State<RiderManagementScreen> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            // Header Section
+            // Header Section with Back Button
             Container(
               width: double.infinity,
-              child: CommonHeader(
-                title: 'Manage Ryder',
-                icon: Icons.motorcycle,
-                additionalAction: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.amber.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddRiderScreen(),
-                        ),
-                      );
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                    child: const Text(
-                      'Add Ryder',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                    icon: const Icon(Icons.arrow_back),
+                    tooltip: 'Back',
+                  ),
+                  Expanded(
+                    child: CommonHeader(
+                      title: 'Manage Ryder',
+                      icon: Icons.motorcycle,
+                      additionalAction: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.amber.withOpacity(0.3),
+                              spreadRadius: 1,
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddRiderScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Add Ryder',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
             const SizedBox(height: 24),

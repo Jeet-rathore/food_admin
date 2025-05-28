@@ -231,7 +231,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                           const SizedBox(
                             width: 80,
                             child: Text(
-                              'In/Out Stock',
+                              'Status',
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
@@ -346,7 +346,14 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AddProductDialog();
+        return AddProductDialog(
+          onProductAdded: (ProductData newProduct) {
+            setState(() {
+              _products.add(newProduct);
+            });
+            Navigator.of(context).pop(); // Added Navigator.pop()
+          },
+        );
       },
     );
   }
@@ -355,7 +362,18 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return EditProductDialog(product: product);
+        return EditProductDialog(
+          product: product,
+          onProductUpdated: (ProductData updatedProduct) {
+            setState(() {
+              int index = _products.indexWhere((p) => p.slNo == product.slNo);
+              if (index != -1) {
+                _products[index] = updatedProduct;
+              }
+            });
+            Navigator.of(context).pop(); // Added Navigator.pop()
+          },
+        );
       },
     );
   }
@@ -379,7 +397,16 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 setState(() {
                   _products.remove(product);
                 });
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Already has Navigator.pop()
+                // Show success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${product.productName} deleted successfully',
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                );
               },
               child: const Text('Delete', style: TextStyle(color: Colors.red)),
             ),
@@ -392,7 +419,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
 
 // Add Product Dialog
 class AddProductDialog extends StatefulWidget {
-  const AddProductDialog({super.key});
+  final Function(ProductData) onProductAdded;
+
+  const AddProductDialog({super.key, required this.onProductAdded});
 
   @override
   State<AddProductDialog> createState() => _AddProductDialogState();
@@ -400,7 +429,13 @@ class AddProductDialog extends StatefulWidget {
 
 class _AddProductDialogState extends State<AddProductDialog> {
   final _formKey = GlobalKey<FormState>();
-  String? _selectedSeller;
+  final _sellerNameController = TextEditingController();
+  final _sellerIdController = TextEditingController();
+  final _productTitleController = TextEditingController();
+  final _productDescController = TextEditingController();
+  final _productPriceController = TextEditingController();
+  final _priceUnitController = TextEditingController();
+  final _quantityController = TextEditingController();
   String? _selectedCategory;
 
   @override
@@ -436,20 +471,26 @@ class _AddProductDialogState extends State<AddProductDialog> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Seller Name',
-                          'Seller Name',
+                        child: _buildTextFieldWithController(
+                          controller: _sellerNameController,
+                          hint: 'Enter Seller Name',
+                          label: 'Seller Name',
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField('Enter Seller ID', 'Seller ID'),
+                        child: _buildTextFieldWithController(
+                          controller: _sellerIdController,
+                          hint: 'Enter Seller ID',
+                          label: 'Seller ID',
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Seller Name',
-                          'Seller Name',
+                        child: _buildTextFieldWithController(
+                          controller: _productTitleController,
+                          hint: 'Enter Product Title',
+                          label: 'Product Title',
                         ),
                       ),
                     ],
@@ -498,6 +539,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                     _selectedCategory = value;
                                   });
                                 },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please select a category';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                           ],
@@ -505,16 +552,18 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Product Title',
-                          'Product Title',
+                        child: _buildTextFieldWithController(
+                          controller: _productDescController,
+                          hint: 'Enter Product Description',
+                          label: 'Product Description',
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Product Description',
-                          'Product Desc',
+                        child: _buildTextFieldWithController(
+                          controller: _productPriceController,
+                          hint: 'Enter Product Price',
+                          label: 'Product Price',
                         ),
                       ),
                     ],
@@ -524,22 +573,24 @@ class _AddProductDialogState extends State<AddProductDialog> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Product Price',
-                          'Product Price',
+                        child: _buildTextFieldWithController(
+                          controller: _priceUnitController,
+                          hint: 'Enter Price Unit',
+                          label: 'Price Unit',
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Price Unit',
-                          'Price Unit',
+                        child: _buildTextFieldWithController(
+                          controller: _quantityController,
+                          hint: 'Enter Quantity',
+                          label: 'Quantity',
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildTextField('Enter Quantity', 'Quantity'),
-                      ),
+                      const Expanded(
+                        child: SizedBox(),
+                      ), // Empty space for alignment
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -555,7 +606,26 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Navigator.of(context).pop();
+                            // Create new product
+                            final newProduct = ProductData(
+                              DateTime.now()
+                                  .millisecondsSinceEpoch, // Generate unique ID
+                              _sellerNameController.text,
+                              _productTitleController.text,
+                              'InStock', // Default status
+                              true, // Default active status
+                            );
+
+                            // Call the callback to add product
+                            widget.onProductAdded(newProduct);
+
+                            // Show success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Product added successfully'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -575,7 +645,11 @@ class _AddProductDialogState extends State<AddProductDialog> {
     );
   }
 
-  Widget _buildTextField(String hint, String label) {
+  Widget _buildTextFieldWithController({
+    required TextEditingController controller,
+    required String hint,
+    required String label,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -585,6 +659,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
         ),
         const SizedBox(height: 8),
         TextFormField(
+          controller: controller,
           decoration: InputDecoration(
             hintText: hint,
             border: OutlineInputBorder(
@@ -600,17 +675,40 @@ class _AddProductDialogState extends State<AddProductDialog> {
               vertical: 8,
             ),
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'This field is required';
+            }
+            return null;
+          },
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _sellerNameController.dispose();
+    _sellerIdController.dispose();
+    _productTitleController.dispose();
+    _productDescController.dispose();
+    _productPriceController.dispose();
+    _priceUnitController.dispose();
+    _quantityController.dispose();
+    super.dispose();
   }
 }
 
 // Edit Product Dialog
 class EditProductDialog extends StatefulWidget {
   final ProductData product;
+  final Function(ProductData) onProductUpdated;
 
-  const EditProductDialog({super.key, required this.product});
+  const EditProductDialog({
+    super.key,
+    required this.product,
+    required this.onProductUpdated,
+  });
 
   @override
   State<EditProductDialog> createState() => _EditProductDialogState();
@@ -620,6 +718,11 @@ class _EditProductDialogState extends State<EditProductDialog> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _sellerNameController;
   late TextEditingController _productNameController;
+  late TextEditingController _sellerIdController;
+  late TextEditingController _productDescController;
+  late TextEditingController _productPriceController;
+  late TextEditingController _priceUnitController;
+  late TextEditingController _quantityController;
   String? _selectedCategory;
 
   @override
@@ -631,6 +734,11 @@ class _EditProductDialogState extends State<EditProductDialog> {
     _productNameController = TextEditingController(
       text: widget.product.productName,
     );
+    _sellerIdController = TextEditingController();
+    _productDescController = TextEditingController();
+    _productPriceController = TextEditingController();
+    _priceUnitController = TextEditingController();
+    _quantityController = TextEditingController();
   }
 
   @override
@@ -674,13 +782,18 @@ class _EditProductDialogState extends State<EditProductDialog> {
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField('Enter Seller ID', 'Seller ID'),
+                        child: _buildTextFieldWithController(
+                          controller: _sellerIdController,
+                          hint: 'Enter Seller ID',
+                          label: 'Seller ID',
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Seller Name',
-                          'Seller Name',
+                        child: _buildTextFieldWithController(
+                          controller: _productNameController,
+                          hint: 'Enter Product Title',
+                          label: 'Product Title',
                         ),
                       ),
                     ],
@@ -737,16 +850,17 @@ class _EditProductDialogState extends State<EditProductDialog> {
                       const SizedBox(width: 16),
                       Expanded(
                         child: _buildTextFieldWithController(
-                          controller: _productNameController,
-                          hint: 'Enter Product Title',
-                          label: 'Product Title',
+                          controller: _productDescController,
+                          hint: 'Enter Product Description',
+                          label: 'Product Description',
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Product Description',
-                          'Product Desc',
+                        child: _buildTextFieldWithController(
+                          controller: _productPriceController,
+                          hint: 'Enter Product Price',
+                          label: 'Product Price',
                         ),
                       ),
                     ],
@@ -756,22 +870,24 @@ class _EditProductDialogState extends State<EditProductDialog> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Product Price',
-                          'Product Price',
+                        child: _buildTextFieldWithController(
+                          controller: _priceUnitController,
+                          hint: 'Enter Price Unit',
+                          label: 'Price Unit',
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: _buildTextField(
-                          'Enter Price Unit',
-                          'Price Unit',
+                        child: _buildTextFieldWithController(
+                          controller: _quantityController,
+                          hint: 'Enter Quantity',
+                          label: 'Quantity',
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildTextField('Enter Quantity', 'Quantity'),
-                      ),
+                      const Expanded(
+                        child: SizedBox(),
+                      ), // Empty space for alignment
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -787,14 +903,36 @@ class _EditProductDialogState extends State<EditProductDialog> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Navigator.of(context).pop();
+                            // Create updated product
+                            final updatedProduct = ProductData(
+                              widget.product.slNo,
+                              _sellerNameController.text,
+                              _productNameController.text,
+                              widget
+                                  .product
+                                  .stockStatus, // Keep existing status
+                              widget
+                                  .product
+                                  .isActive, // Keep existing active status
+                            );
+
+                            // Call the callback to update product
+                            widget.onProductUpdated(updatedProduct);
+
+                            // Show success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Product updated successfully'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
                           foregroundColor: Colors.white,
                         ),
-                        child: const Text('Save'),
+                        child: const Text('Update'),
                       ),
                     ],
                   ),
@@ -804,36 +942,6 @@ class _EditProductDialogState extends State<EditProductDialog> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField(String hint, String label) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          decoration: InputDecoration(
-            hintText: hint,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -867,6 +975,12 @@ class _EditProductDialogState extends State<EditProductDialog> {
               vertical: 8,
             ),
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'This field is required';
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -876,6 +990,11 @@ class _EditProductDialogState extends State<EditProductDialog> {
   void dispose() {
     _sellerNameController.dispose();
     _productNameController.dispose();
+    _sellerIdController.dispose();
+    _productDescController.dispose();
+    _productPriceController.dispose();
+    _priceUnitController.dispose();
+    _quantityController.dispose();
     super.dispose();
   }
 }
@@ -896,5 +1015,3 @@ class ProductData {
     this.isActive,
   );
 }
-
-// Common Header Widget (from your paste.txt)

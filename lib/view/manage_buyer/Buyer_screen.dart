@@ -97,14 +97,32 @@ class _BuyerManagementScreenState extends State<BuyerManagementScreen> {
           ),
           child: Column(
             children: [
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SellerListScreen()),
-                  );
-                },
-                child: CommonHeader(title: 'Manage Buyer', icon: Icons.group),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                    tooltip: 'Back',
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SellerListScreen(),
+                          ),
+                        );
+                      },
+                      child: CommonHeader(
+                        title: 'Manage Buyer',
+                        icon: Icons.group,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               Expanded(child: _buildDataTable()),

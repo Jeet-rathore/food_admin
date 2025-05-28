@@ -34,6 +34,15 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text('Category Management'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Added Navigator.pop for back navigation
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -261,17 +270,25 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
     );
   }
 
-  void _showAddCategoryDialog() {
-    showDialog(
+  void _showAddCategoryDialog() async {
+    final result = await showDialog<bool>(
       context: context,
       builder:
           (context) =>
               const CategoryDialog(title: 'Add Category', isEdit: false),
     );
+
+    // Handle the result if needed
+    if (result == true) {
+      // Refresh the category list or show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Category added successfully!')),
+      );
+    }
   }
 
-  void _showEditCategoryDialog(CategoryData category) {
-    showDialog(
+  void _showEditCategoryDialog(CategoryData category) async {
+    final result = await showDialog<bool>(
       context: context,
       builder:
           (context) => CategoryDialog(
@@ -280,6 +297,14 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
             category: category,
           ),
     );
+
+    // Handle the result if needed
+    if (result == true) {
+      // Refresh the category list or show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Category updated successfully!')),
+      );
+    }
   }
 
   void _showDeleteConfirmation(CategoryData category) {
@@ -291,13 +316,23 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
             content: Text('Are you sure you want to delete ${category.name}?'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(context, false), // Return false
                 child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
-                  // Handle delete
-                  Navigator.pop(context);
+                  // Handle delete logic here
+                  setState(() {
+                    _categories.removeWhere((cat) => cat.slNo == category.slNo);
+                  });
+                  Navigator.pop(context, true); // Return true after deletion
+
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${category.name} deleted successfully!'),
+                    ),
+                  );
                 },
                 child: const Text(
                   'Delete',
@@ -363,7 +398,11 @@ class _CategoryDialogState extends State<CategoryDialog> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed:
+                      () => Navigator.pop(
+                        context,
+                        false,
+                      ), // Return false when closing
                   icon: const Icon(Icons.close),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -462,32 +501,38 @@ class _CategoryDialogState extends State<CategoryDialog> {
             const SizedBox(height: 16),
 
             // Image Upload Section
-            Container(
-              width: double.infinity,
-              height: 140,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey[300]!,
-                  style: BorderStyle.solid,
+            InkWell(
+              onTap: () {
+                // Handle image selection
+                _selectImage();
+              },
+              child: Container(
+                width: double.infinity,
+                height: 140,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey[300]!,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey[50],
                 ),
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[50],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.cloud_upload, size: 32, color: Colors.grey[400]),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Upload Image',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Drag and drop or click to browse',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
-                ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.cloud_upload, size: 32, color: Colors.grey[400]),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Upload Image',
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Drag and drop or click to browse',
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -497,7 +542,11 @@ class _CategoryDialogState extends State<CategoryDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed:
+                      () => Navigator.pop(
+                        context,
+                        false,
+                      ), // Return false for cancel
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
@@ -516,8 +565,22 @@ class _CategoryDialogState extends State<CategoryDialog> {
                 const SizedBox(width: 12),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle save/update
-                    Navigator.pop(context);
+                    // Validate form
+                    if (_nameController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter a category name'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Handle save/update logic here
+                    _saveCategory();
+
+                    // Close dialog and return true for success
+                    Navigator.pop(context, true);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
@@ -544,6 +607,24 @@ class _CategoryDialogState extends State<CategoryDialog> {
         ),
       ),
     );
+  }
+
+  void _selectImage() {
+    // Implement image selection logic
+    print('Image selection triggered');
+    // You can integrate with image_picker package here
+  }
+
+  void _saveCategory() {
+    // Implement save/update logic
+    final categoryData = {
+      'name': _nameController.text.trim(),
+      'isActive': _isActive,
+      'isEdit': widget.isEdit,
+    };
+
+    print('Saving category: $categoryData');
+    // Add your save logic here (API calls, database operations, etc.)
   }
 
   @override

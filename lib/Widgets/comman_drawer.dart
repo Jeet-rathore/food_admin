@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodapp_admin/view/Add-product/product_screen.dart';
 import 'package:foodapp_admin/view/AssinConfigration_screen/assin_screen.dart';
 import 'package:foodapp_admin/view/Manage_rider/add_ride.dart';
+import 'package:foodapp_admin/view/Manage_rider/ride_screnn.dart';
 import 'package:foodapp_admin/view/manage_buyer/buyer_screen.dart';
 import 'package:foodapp_admin/view/manage_catogary/catogrt.dart';
 import 'package:foodapp_admin/view/manage_vechail/vechali_screen.dart';
@@ -41,7 +42,7 @@ class AdminDrawer extends StatelessWidget {
             context,
             Icons.store,
             "Add Rider",
-            () => AddRiderScreen(),
+            () => RiderManagementScreen(),
           ),
           _buildDrawerItem(
             context,

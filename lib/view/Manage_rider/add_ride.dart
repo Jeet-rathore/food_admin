@@ -482,4 +482,3 @@ class _AddRiderScreenState extends State<AddRiderScreen> {
     Navigator.pop(context);
   }
 }
- 

@@ -19,9 +19,11 @@ class _EditSellerScreenState extends State<EditSellerScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
   late TextEditingController _cityController;
+  late TextEditingController _stateController;
   late TextEditingController _pinCodeController;
   late TextEditingController _businessNameController;
-  late TextEditingController _businessTypeController;
+  late TextEditingController _panCardController;
+  late TextEditingController _aadharCardController;
 
   @override
   void initState() {
@@ -42,9 +44,11 @@ class _EditSellerScreenState extends State<EditSellerScreen> {
     );
     _addressController = TextEditingController();
     _cityController = TextEditingController();
+    _stateController = TextEditingController();
     _pinCodeController = TextEditingController();
     _businessNameController = TextEditingController();
-    _businessTypeController = TextEditingController();
+    _panCardController = TextEditingController();
+    _aadharCardController = TextEditingController();
   }
 
   @override
@@ -55,40 +59,39 @@ class _EditSellerScreenState extends State<EditSellerScreen> {
     _phoneController.dispose();
     _addressController.dispose();
     _cityController.dispose();
+    _stateController.dispose();
     _pinCodeController.dispose();
     _businessNameController.dispose();
-    _businessTypeController.dispose();
+    _panCardController.dispose();
+    _aadharCardController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.grey[100],
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             // Header
-            CommonHeader(
-              title: widget.seller == null ? 'Add Seller' : 'Edit Seller',
-              icon: Icons.edit,
-            ),
-            SizedBox(height: 24),
+            CommonHeader(title: 'Edit Seller', icon: Icons.edit),
+            SizedBox(height: 20),
 
             // Form Content
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.1),
                         spreadRadius: 1,
-                        blurRadius: 10,
+                        blurRadius: 5,
                       ),
                     ],
                   ),
@@ -97,137 +100,223 @@ class _EditSellerScreenState extends State<EditSellerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Edit Seller Details',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
+                        Center(
+                          child: Text(
+                            'Edit Seller Details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[800],
+                            ),
                           ),
                         ),
-                        SizedBox(height: 24),
+                        SizedBox(height: 30),
 
                         // General Information Section
-                        _buildSectionHeader('General Information'),
-                        SizedBox(height: 16),
+                        Text(
+                          'General Information',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        SizedBox(height: 15),
+
                         Row(
                           children: [
                             Expanded(
                               child: _buildFormField(
                                 label: 'First Name',
                                 controller: _firstNameController,
+                                icon: Icons.person,
                                 isRequired: true,
                               ),
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 15),
                             Expanded(
                               child: _buildFormField(
                                 label: 'Last Name',
                                 controller: _lastNameController,
+                                icon: Icons.person_outline,
                                 isRequired: true,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 15),
+
                         Row(
                           children: [
                             Expanded(
                               child: _buildFormField(
-                                label: 'Email',
+                                label: 'Email ID',
                                 controller: _emailController,
+                                icon: Icons.email,
                                 isRequired: true,
                               ),
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 15),
                             Expanded(
                               child: _buildFormField(
-                                label: 'Phone Number',
+                                label: 'Contact Number',
                                 controller: _phoneController,
+                                icon: Icons.phone,
                                 isRequired: true,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 32),
+                        SizedBox(height: 15),
+
+                        _buildFormField(
+                          label: 'Office Number',
+                          controller: TextEditingController(),
+                          icon: Icons.phone_in_talk,
+                        ),
+                        SizedBox(height: 25),
 
                         // Address Section
-                        _buildSectionHeader('Address'),
-                        SizedBox(height: 16),
-                        _buildFormField(
-                          label: 'Street Address',
-                          controller: _addressController,
-                          maxLines: 2,
+                        Text(
+                          'Address',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[600],
+                          ),
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 15),
+
+                        _buildFormField(
+                          label: 'Door No./House No.',
+                          controller: _addressController,
+                          icon: Icons.home,
+                        ),
+                        SizedBox(height: 15),
+
                         Row(
                           children: [
                             Expanded(
                               child: _buildFormField(
-                                label: 'City',
-                                controller: _cityController,
+                                label: 'Street/Area',
+                                controller: TextEditingController(),
+                                icon: Icons.location_on,
                               ),
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 15),
                             Expanded(
                               child: _buildFormField(
-                                label: 'Pin Code',
-                                controller: _pinCodeController,
+                                label: 'Select Locality',
+                                controller: TextEditingController(),
+                                icon: Icons.location_city,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 32),
+                        SizedBox(height: 15),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildDropdownField(
+                                label: 'Select City',
+                                icon: Icons.location_city,
+                              ),
+                            ),
+                            SizedBox(width: 15),
+                            Expanded(
+                              child: _buildDropdownField(
+                                label: 'Select City',
+                                icon: Icons.location_city,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 15),
+
+                        _buildFormField(
+                          label: 'Pin Code',
+                          controller: _pinCodeController,
+                          icon: Icons.pin_drop,
+                        ),
+                        SizedBox(height: 25),
 
                         // Business Information Section
-                        _buildSectionHeader('Business Information'),
-                        SizedBox(height: 16),
+                        Text(
+                          'Business Information',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        SizedBox(height: 15),
+
                         Row(
                           children: [
                             Expanded(
                               child: _buildFormField(
-                                label: 'Business Name',
+                                label: 'Business Detail/Image',
                                 controller: _businessNameController,
+                                icon: Icons.business,
+                                hasAttachment: true,
                               ),
                             ),
-                            SizedBox(width: 16),
+                            SizedBox(width: 15),
                             Expanded(
                               child: _buildFormField(
-                                label: 'Business Type',
-                                controller: _businessTypeController,
+                                label: 'Aadhar Card',
+                                controller: _aadharCardController,
+                                icon: Icons.credit_card,
+                                hasAttachment: true,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 32),
+                        SizedBox(height: 15),
+
+                        _buildFormField(
+                          label: 'PAN Card',
+                          controller: _panCardController,
+                          icon: Icons.credit_card_outlined,
+                          hasAttachment: true,
+                        ),
+                        SizedBox(height: 40),
 
                         // Action Buttons
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Cancel'),
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 12,
+                            Container(
+                              width: 120,
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(color: Colors.grey[600]),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  side: BorderSide(color: Colors.grey[300]!),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 12),
-                            ElevatedButton(
-                              onPressed: _saveChanges,
-                              child: Text('Update'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 32,
-                                  vertical: 12,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                            SizedBox(width: 15),
+                            Container(
+                              width: 120,
+                              child: ElevatedButton(
+                                onPressed: _saveChanges,
+                                child: Text('Update'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orange,
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
                               ),
                             ),
@@ -245,70 +334,165 @@ class _EditSellerScreenState extends State<EditSellerScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: Colors.grey[700],
-      ),
-    );
-  }
-
   Widget _buildFormField({
     required String label,
     required TextEditingController controller,
+    required IconData icon,
     bool isRequired = false,
-    int maxLines = 1,
+    bool hasAttachment = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: TextSpan(
-            text: label,
-            style: TextStyle(
-              color: Colors.grey[700],
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
+        Container(
+          height: 50,
+          child: Stack(
             children: [
-              if (isRequired)
-                TextSpan(text: ' *', style: TextStyle(color: Colors.red)),
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                child: TextFormField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                      left: 40,
+                      right: hasAttachment ? 40 : 12,
+                      top: 12,
+                      bottom: 12,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                  ),
+                  validator:
+                      isRequired
+                          ? (value) {
+                            if (value == null || value.isEmpty) {
+                              return '$label is required';
+                            }
+                            return null;
+                          }
+                          : null,
+                ),
+              ),
+              // Label with icon positioned at top left
+              Positioned(
+                left: 8,
+                top: 0,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(icon, size: 16, color: Colors.grey[600]),
+                      SizedBox(width: 4),
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Attachment icon if needed
+              if (hasAttachment)
+                Positioned(
+                  right: 8,
+                  top: 16,
+                  child: Icon(
+                    Icons.attach_file,
+                    size: 16,
+                    color: Colors.grey[500],
+                  ),
+                ),
             ],
           ),
         ),
-        SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          maxLines: maxLines,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.blue),
-            ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            filled: true,
-            fillColor: Colors.grey[50],
+      ],
+    );
+  }
+
+  Widget _buildDropdownField({required String label, required IconData icon}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 50,
+          child: Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                      left: 40,
+                      right: 12,
+                      top: 12,
+                      bottom: 12,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                  ),
+                  items: [
+                    DropdownMenuItem(value: 'option1', child: Text('Option 1')),
+                    DropdownMenuItem(value: 'option2', child: Text('Option 2')),
+                  ],
+                  onChanged: (value) {},
+                ),
+              ),
+              // Label with icon positioned at top left
+              Positioned(
+                left: 8,
+                top: 0,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(icon, size: 16, color: Colors.grey[600]),
+                      SizedBox(width: 4),
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          validator:
-              isRequired
-                  ? (value) {
-                    if (value == null || value.isEmpty) {
-                      return '$label is required';
-                    }
-                    return null;
-                  }
-                  : null,
         ),
       ],
     );
@@ -316,7 +500,6 @@ class _EditSellerScreenState extends State<EditSellerScreen> {
 
   void _saveChanges() {
     if (_formKey.currentState!.validate()) {
-      // Save logic here
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Seller updated successfully!')));

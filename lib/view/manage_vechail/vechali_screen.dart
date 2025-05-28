@@ -272,7 +272,27 @@ class _VehicleManagementScreenState extends State<VehicleManagementScreen> {
           isEdit: false,
           onSave: (vehicleData) {
             // Handle add vehicle logic
+            setState(() {
+              vehicles.add(
+                Vehicle(
+                  slNo: vehicles.length + 1,
+                  vehicleType: vehicleData['vehicleType'],
+                  vehicleName: vehicleData['vehicleName'],
+                  vehicleNumber: vehicleData['vehicleNumber'],
+                  riderDriver: vehicleData['riderDriver'],
+                  isActive: true,
+                ),
+              );
+            });
             Navigator.of(context).pop();
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Vehicle added successfully!'),
+                backgroundColor: Colors.green,
+              ),
+            );
           },
         );
       },
@@ -289,7 +309,28 @@ class _VehicleManagementScreenState extends State<VehicleManagementScreen> {
           initialData: vehicle,
           onSave: (vehicleData) {
             // Handle edit vehicle logic
+            setState(() {
+              int index = vehicles.indexWhere((v) => v.slNo == vehicle.slNo);
+              if (index != -1) {
+                vehicles[index] = Vehicle(
+                  slNo: vehicle.slNo,
+                  vehicleType: vehicleData['vehicleType'],
+                  vehicleName: vehicleData['vehicleName'],
+                  vehicleNumber: vehicleData['vehicleNumber'],
+                  riderDriver: vehicleData['riderDriver'],
+                  isActive: vehicle.isActive,
+                );
+              }
+            });
             Navigator.of(context).pop();
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Vehicle updated successfully!'),
+                backgroundColor: Colors.green,
+              ),
+            );
           },
         );
       },
@@ -320,7 +361,18 @@ class _VehicleManagementScreenState extends State<VehicleManagementScreen> {
             ElevatedButton(
               onPressed: () {
                 // Handle delete logic
+                setState(() {
+                  vehicles.removeWhere((v) => v.slNo == vehicle.slNo);
+                });
                 Navigator.of(context).pop();
+
+                // Show success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Vehicle deleted successfully!'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text(
@@ -610,6 +662,16 @@ class _VehicleDialogState extends State<VehicleDialog> {
         'riderDriver': _riderDriverController.text,
       };
       widget.onSave(vehicleData);
+    } else {
+      // Show validation error if vehicle type is not selected
+      if (selectedVehicleType == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select a vehicle type'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodapp_admin/Widgets/comman.dart';
+import 'package:foodapp_admin/view/manager_seller/edit_screen.dart';
 
 // Sample Seller Data Model
 class SellerData {
@@ -91,7 +92,23 @@ class _SellerListScreenState extends State<SellerListScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CommonHeader(title: 'Manage Seller', icon: Icons.people),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                  tooltip: 'Back',
+                ),
+                Expanded(
+                  child: CommonHeader(
+                    title: 'Manage Seller',
+                    icon: Icons.people,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             TableControlsWidget(
               entriesPerPage: _entriesPerPage,
@@ -183,7 +200,8 @@ class _SellerListScreenState extends State<SellerListScreen> {
                                     ),
                                     _buildDataCellWithWidget(
                                       ActionButtonsWidget(
-                                        onEdit: () => _editSeller(seller),
+                                        onEdit: () => EditSellerScreen(),
+
                                         onDelete: () => _deleteSeller(seller),
                                       ),
                                     ),
